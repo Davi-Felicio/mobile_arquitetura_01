@@ -21,3 +21,21 @@ A interface passaria a depender de detalhes técnicos de acesso a dados, como fo
 **4. Como essa arquitetura facilitaria a substituição da API por um banco de dados local?**
 
 Bastaria criar uma nova implementação do `ProductRepository` que usa um datasource local em vez do remoto, e trocar a injeção no `main.dart`. O ViewModel, a interface e as entidades do domínio não precisariam mudar nada, pois eles dependem apenas do contrato (`ProductRepository`), não da implementação concreta.
+
+---
+
+## Gerenciamento de Estado: Provider, Riverpod e BLoC
+
+Essas três abordagens resolvem o mesmo problema — compartilhar e atualizar estado entre widgets — mas de formas diferentes.
+
+### Provider
+
+É a abordagem mais simples e direta. Um objeto que estende `ChangeNotifier` guarda o estado e chama `notifyListeners()` quando algo muda. Os widgets que precisam desse estado usam `Consumer` ou `context.watch` para se reconstruir automaticamente. É fácil de entender e de integrar em projetos existentes, por isso costuma ser a primeira escolha em aplicações menores.
+
+### Riverpod
+
+É uma evolução do Provider, mas com uma abordagem diferente: o estado é declarado fora da árvore de widgets, usando `providers` globais. Isso elimina alguns problemas do Provider original, como dependência de contexto e dificuldade em acessar estado fora de widgets. Com Riverpod, o código fica mais testável e previsível, sendo uma boa escolha para projetos de médio a grande porte.
+
+### BLoC (Business Logic Component)
+
+É a abordagem mais estruturada das três. O estado é gerenciado por eventos: a interface dispara um evento, o BLoC processa e emite um novo estado. Tudo flui de forma unidirecional e explícita. Por ser mais verboso, exige mais código para funcionalidades simples, mas oferece rastreabilidade total do que acontece na aplicação — ideal para times maiores ou projetos com lógica de negócio complexa.
