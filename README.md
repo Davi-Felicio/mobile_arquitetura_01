@@ -44,34 +44,55 @@ Essas três abordagens resolvem o mesmo problema — compartilhar e atualizar es
 
 ## Questionário — Atividade 05
 
-**1. O que significa gerenciamento de estado em uma aplicação Flutter?**
+1. O que é gerenciamento de estado no Flutter?
+É como o app guarda e controla as informações que aparecem na tela. Se um dado muda (como um contador ou um nome), o gerenciamento de estado garante que a interface seja redesenhada para mostrar o valor novo. É o "cérebro" que decide o que a tela exibe em cada momento.
+2. Por que evitar estado direto nos widgets em apps grandes?
+Porque a informação fica "presa" dentro do widget. Se você precisar desse dado em outra tela, terá que passá-lo manualmente de pai para filho em uma corrente infinita (o famoso prop drilling). Isso deixa o código bagunçado, difícil de consertar e impossível de escalar.
+3. Para que serve o notifyListeners() no Provider?
+Ele funciona como um "alerta geral". Sempre que você altera um dado dentro da classe, precisa chamar esse método para avisar ao Flutter: "Ei, a informação mudou! Quem estiver usando esse dado agora, favor se atualizar". Sem ele, o valor muda no código, mas a tela continua igual.
+4. Qual a diferença entre Provider e Riverpod?
+A principal diferença é a dependência do contexto. O Provider precisa estar "dentro" da árvore de widgets para ser acessado. Já o Riverpod funciona de forma global: você define os estados fora da árvore, o que permite acessá-los de qualquer lugar (até fora da interface) de um jeito mais seguro e fácil de testar.
+5. No BLoC, por que a interface não muda o estado diretamente?
+Para manter a organização. No BLoC, a tela só "pede" coisas enviando eventos; ela não decide como as coisas mudam. Isso separa a lógica de negócio (o que acontece) da interface (o que aparece), evitando que o código vire uma bagunça onde tudo faz tudo.
+6. Qual a vantagem do fluxo Evento → BLoC → Estado → Tela?
+A previsibilidade. Como o caminho é sempre o mesmo, fica muito fácil encontrar erros (debug). Você sabe exatamente qual evento gerou qual mudança. Além disso, permite testar a lógica do app sem nem precisar abrir o emulador, já que o BLoC funciona de forma independente da interface.
+7. Qual estratégia você usou e por quê?
+Usei o Provider. Escolhi ele pela simplicidade e rapidez. Como a função de favoritos era algo visual e direto, o ChangeNotifier resolveu o problema perfeitamente, mantendo o código limpo e sem a complexidade desnecessária de padrões mais robustos.
+8. Quais foram as maiores dificuldades?
+O maior desafio foi o desempenho da árvore de widgets. No início, o app reconstruía a lista inteira cada vez que eu favoritava um item, o que causava lentidão. A solução foi "fechar o cerco": coloquei o Consumer apenas no item específico da lista, garantindo que só aquele botão fosse atualizado, deixando a navegação bem mais fluida.
 
-É a forma como a aplicação armazena e controla as informações que afetam a interface. Quando o estado muda, os widgets que dependem dele precisam ser reconstruídos. Gerenciar estado é basicamente decidir onde essas informações ficam guardadas e como as mudanças chegam até a tela.
+---
 
-**2. Por que manter o estado diretamente dentro dos widgets pode gerar problemas em aplicações maiores?**
+## Questionário — Atividade 06
 
-Porque o estado fica preso dentro do widget e não pode ser compartilhado com outras partes da tela sem ser passado manualmente por parâmetro. Conforme a aplicação cresce, isso vira um problema: qualquer mudança precisa percorrer uma cadeia enorme de widgets, o código fica difícil de manter e qualquer refatoração vira um trabalho enorme.
+**1. Qual era a estrutura do seu projeto antes da inclusão das novas telas?**
 
-**3. Qual é o papel do método `notifyListeners()` na abordagem Provider?**
+O projeto tinha uma única tela, a `ProductPage`, que já era aberta direto ao iniciar o app. Ela carregava os produtos da API, exibia a lista e permitia marcar favoritos com checkbox. Não havia nenhum fluxo de navegação  era tudo em uma tela só.
 
-É ele quem avisa os widgets que algo mudou. Quando o estado é alterado dentro do `ChangeNotifier`, o `notifyListeners()` sinaliza para todos os `Consumer` e `context.watch` registrados que precisam se reconstruir. Sem essa chamada, a interface não atualiza, mesmo que o valor tenha mudado.
+**2. Como ficou o fluxo da aplicação após a implementação da navegação?**
 
-**4. Qual é a principal diferença conceitual entre Provider e Riverpod?**
+O app agora começa na `HomePage`, que tem um botão para abrir a lista de produtos. A partir da `ProductPage`, o usuário pode tocar em qualquer produto para abrir a `ProductDetailPage` com as informações completas. O fluxo ficou: `HomePage` → `ProductPage` → `ProductDetailPage`.
 
-O Provider depende do contexto do Flutter para acessar o estado, o que cria uma limitação: você só consegue ler um provider de dentro da árvore de widgets. O Riverpod resolve isso declarando os providers fora dessa árvore, tornando o estado acessível de qualquer lugar, inclusive em funções e testes, sem precisar de contexto.
+**3. Qual é o papel do `Navigator.push()` no seu projeto?**
 
-**5. No padrão BLoC, por que a interface não altera diretamente o estado da aplicação?**
+Ele é usado em dois momentos: na `HomePage` para abrir a `ProductPage`, e na `ProductPage` para abrir a `ProductDetailPage` quando o usuário toca em um item. Em ambos os casos, a nova tela é empilhada sobre a anterior, mantendo o histórico de navegação.
 
-Porque no BLoC a interface só tem um papel: disparar eventos e mostrar estados. A lógica de decidir o que fazer com um evento fica no BLoC. Se a interface alterasse o estado diretamente, ela estaria assumindo uma responsabilidade que não é dela, misturando apresentação com lógica de negócio e quebrando a separação que o padrão propõe.
+**4. Qual é o papel do `Navigator.pop()` no seu projeto?**
 
-**6. Qual é a vantagem de organizar o fluxo como: Evento → Bloc → Novo estado → Interface?**
+O `pop` é gerenciado automaticamente pelo Flutter através do botão de voltar nativo do dispositivo e da seta na `AppBar`. Não foi necessário chamá-lo manualmente, pois o comportamento padrão já resolve, ao voltar, a tela atual é removida da pilha e a anterior reaparece.
 
-O fluxo é completamente previsível e rastreável. Dado um evento e um estado inicial, você sempre sabe o que vai acontecer. Isso facilita muito o debug, porque qualquer comportamento inesperado pode ser encontrado em um lugar só — o BLoC. Também torna o código mais fácil de testar, já que você pode testar o BLoC de forma isolada sem precisar renderizar nenhum widget.
+**5. Como os dados do produto selecionado foram enviados para a tela de detalhes?**
 
-**7. Qual estratégia de gerenciamento de estado foi utilizada em sua implementação?**
+O objeto `Product` foi passado diretamente como parâmetro no construtor da `ProductDetailPage` dentro do `MaterialPageRoute`. Quando o usuário toca em um item, o `onTap` captura o produto daquele índice e o entrega para a próxima tela na hora do `Navigator.push`.
 
-Foi utilizado o **Provider**. A escolha foi pela simplicidade: a funcionalidade de favoritos é puramente local e visual, sem necessidade de persistência ou lógica complexa. Um `ChangeNotifier` com um `Set` de IDs favoritos resolveu o problema de forma direta e com pouco código adicional.
+**6. Por que a tela de detalhes depende das informações da tela anterior?**
 
-**8. Durante a implementação, quais foram as principais dificuldades encontradas?**
+Porque ela não busca nada da API por conta própria, ela apenas exibe o que recebe. A lista já carregou e mapeou todos os dados do produto, então faz sentido simplesmente repassá-los. Não haveria motivo para fazer uma segunda requisição para algo que já está disponível.
 
-A parte mais confusa foi garantir que o `Consumer` estivesse no lugar certo dentro da árvore de widgets. Num primeiro momento, o `Consumer<FavoritesNotifier>` foi colocado fora do `ValueListenableBuilder` do estado da lista, o que fazia com que toda a lista fosse reconstruída ao favoritar um item — incluindo o recarregamento visual de todas as imagens. Mover o `Consumer` para dentro do `itemBuilder`, envolvendo apenas o `ListTile` individual, resolveu o problema e fez com que somente o item tocado fosse reconstruído.
+**7. Quais foram as principais mudanças feitas no projeto original?**
+
+Foram criadas duas novas páginas (`HomePage` e `ProductDetailPage`) e o campo `description` foi adicionado à entidade `Product`, ao `ProductModel` e ao mapeamento do repositório, já que a tela de detalhes precisava exibir essa informação. O `main.dart` passou a apontar para a `HomePage`, e a `ProductPage` recebeu o `onTap` nos itens da lista.
+
+**8. Quais dificuldades você encontrou durante a adaptação do projeto para múltiplas telas?**
+
+A maior dificuldade foi perceber que a entidade `Product` não tinha o campo `description`, que a API já retorna. Como a `ProductDetailPage` precisava exibir esse dado, foi necessário atualizar a entidade, o model e o repositório ao mesmo tempo — um ajuste simples, mas que tocou em três camadas diferentes da arquitetura ao mesmo tempo.
