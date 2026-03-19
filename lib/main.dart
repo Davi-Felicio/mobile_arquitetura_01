@@ -4,7 +4,7 @@ import 'core/network/http_client.dart';
 import 'data/datasources/product_cache_datasource.dart';
 import 'data/datasources/product_remote_datasource.dart';
 import 'data/repositories/product_repository_impl.dart';
-import 'presentation/pages/product_page.dart';
+import 'presentation/pages/home_page.dart';
 import 'presentation/viewmodels/favorites_notifier.dart';
 import 'presentation/viewmodels/product_viewmodel.dart';
 
@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
       create: (_) => FavoritesNotifier(),
       child: MaterialApp(
         title: 'Products',
-        home: ProductPage(viewModel: viewModel),
+        home: HomePage(viewModel: viewModel),
       ),
     );
   }

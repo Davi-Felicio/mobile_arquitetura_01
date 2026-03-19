@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../viewmodels/favorites_notifier.dart';
 import '../viewmodels/product_viewmodel.dart';
 import '../viewmodels/product_state.dart';
+import 'product_detail_page.dart';
 
 class ProductPage extends StatelessWidget {
   final ProductViewModel viewModel;
@@ -36,6 +37,15 @@ class ProductPage extends StatelessWidget {
                       value: favorites.isFavorite(product.id),
                       onChanged: (_) => favorites.toggle(product.id),
                     ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              ProductDetailPage(product: product),
+                        ),
+                      );
+                    },
                   );
                 },
               );
