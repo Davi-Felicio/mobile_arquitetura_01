@@ -1,0 +1,59 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../viewmodels/favorites_notifier.dart';
+import '../viewmodels/product_viewmodel.dart';
+import '../viewmodels/product_state.dart';
+import '../widgets/product_card.dart';
+import 'product_detail_screen.dart';
+
+class ProductListScreen extends StatelessWidget {
+  final ProductViewModel viewModel;
+
+  const ProductListScreen({super.key, required this.viewModel});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Produtos")),
+      body: ValueListenableBuilder<ProductState>(
+        valueListenable: viewModel.state,
+        builder: (context, state, _) {
+          if (state.isLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (state.error != null) {
+            return Center(child: Text(state.error!));
+          }
+          return Consumer<FavoritesNotifier>(
+            builder: (context, favorites, _) {
+              return ListView.builder(
+                itemCount: state.products.length,
+                itemBuilder: (context, index) {
+                  final product = state.products[index];
+                  return ProductCard(
+                    product: product,
+                    isFavorite: favorites.isFavorite(product.id),
+                    onFavoriteToggle: () => favorites.toggle(product.id),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              ProductDetailScreen(product: product),
+                        ),
+                      );
+                    },
+                  );
+                },
+              );
+            },
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: viewModel.loadProducts,
+        child: const Icon(Icons.download),
+      ),
+    );
+  }
+}

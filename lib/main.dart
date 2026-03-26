@@ -1,19 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'core/network/http_client.dart';
-import 'data/datasources/product_cache_datasource.dart';
-import 'data/datasources/product_remote_datasource.dart';
-import 'data/repositories/product_repository_impl.dart';
-import 'presentation/pages/home_page.dart';
-import 'presentation/viewmodels/favorites_notifier.dart';
-import 'presentation/viewmodels/product_viewmodel.dart';
+import 'services/product_service.dart';
+import 'screens/home_screen.dart';
+import 'viewmodels/favorites_notifier.dart';
+import 'viewmodels/product_viewmodel.dart';
 
 void main() {
-  final client = AppHttpClient();
-  final datasource = ProductRemoteDatasource(client);
-  final cache = ProductCacheDatasource();
-  final repository = ProductRepositoryImpl(datasource, cache);
-  final viewModel = ProductViewModel(repository);
+  final service = ProductService();
+  final viewModel = ProductViewModel(service);
 
   runApp(MyApp(viewModel: viewModel));
 }
@@ -29,7 +23,7 @@ class MyApp extends StatelessWidget {
       create: (_) => FavoritesNotifier(),
       child: MaterialApp(
         title: 'Products',
-        home: HomePage(viewModel: viewModel),
+        home: HomeScreen(viewModel: viewModel),
       ),
     );
   }
