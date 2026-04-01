@@ -6,6 +6,8 @@ class ProductCard extends StatelessWidget {
   final bool isFavorite;
   final VoidCallback onFavoriteToggle;
   final VoidCallback onTap;
+  final VoidCallback onEdit;
+  final VoidCallback onDelete;
 
   const ProductCard({
     super.key,
@@ -13,19 +15,51 @@ class ProductCard extends StatelessWidget {
     required this.isFavorite,
     required this.onFavoriteToggle,
     required this.onTap,
+    required this.onEdit,
+    required this.onDelete,
   });
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: Image.network(product.image, width: 50),
-      title: Text(product.title),
-      subtitle: Text("\$${product.price}"),
-      trailing: Checkbox(
-        value: isFavorite,
-        onChanged: (_) => onFavoriteToggle(),
+    return Card(
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Row(
+            children: [
+              Image.network(product.image, width: 50, height: 50,
+                  fit: BoxFit.contain),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      product.title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text("\$${product.price}"),
+                  ],
+                ),
+              ),
+              Checkbox(
+                value: isFavorite,
+                onChanged: (_) => onFavoriteToggle(),
+              ),
+              IconButton(
+                icon: const Icon(Icons.edit, size: 20),
+                onPressed: onEdit,
+              ),
+              IconButton(
+                icon: const Icon(Icons.delete, size: 20),
+                onPressed: onDelete,
+              ),
+            ],
+          ),
+        ),
       ),
-      onTap: onTap,
     );
   }
 }

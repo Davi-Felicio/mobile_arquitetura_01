@@ -22,4 +22,13 @@ class Product {
       description: json["description"] ?? "",
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "title": title,
+      "price": price,
+      "image": image,
+      "description": description,
+    };
+  }
 }
