@@ -19,6 +19,8 @@ class ProductFormScreen extends StatefulWidget {
 class _ProductFormScreenState extends State<ProductFormScreen> {
   final _titleController = TextEditingController();
   final _priceController = TextEditingController();
+  final _descriptionController = TextEditingController();
+  final _imageController = TextEditingController();
 
   bool get _isEditing => widget.product != null;
 
@@ -28,6 +30,8 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
     if (_isEditing) {
       _titleController.text = widget.product!.title;
       _priceController.text = widget.product!.price.toString();
+      _descriptionController.text = widget.product!.description;
+      _imageController.text = widget.product!.image;
     }
   }
 
@@ -35,12 +39,16 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
   void dispose() {
     _titleController.dispose();
     _priceController.dispose();
+    _descriptionController.dispose();
+    _imageController.dispose();
     super.dispose();
   }
 
   void _save() {
     final title = _titleController.text.trim();
     final price = double.tryParse(_priceController.text.trim()) ?? 0;
+    final description = _descriptionController.text.trim();
+    final image = _imageController.text.trim();
 
     if (title.isEmpty) return;
 
@@ -49,8 +57,8 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
         id: widget.product!.id,
         title: title,
         price: price,
-        image: widget.product!.image,
-        description: widget.product!.description,
+        image: image,
+        description: description,
       );
       widget.viewModel.updateProduct(updated);
     } else {
@@ -58,8 +66,8 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
         id: 0,
         title: title,
         price: price,
-        image: "",
-        description: "",
+        image: image,
+        description: description,
       );
       widget.viewModel.addProduct(created);
     }
@@ -73,7 +81,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
       appBar: AppBar(
         title: Text(_isEditing ? "Editar Produto" : "Novo Produto"),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
@@ -87,10 +95,24 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
               decoration: const InputDecoration(labelText: "Preço"),
               keyboardType: TextInputType.number,
             ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: _descriptionController,
+              decoration: const InputDecoration(labelText: "Descrição"),
+              maxLines: 3,
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: _imageController,
+              decoration: const InputDecoration(labelText: "URL da imagem"),
+            ),
             const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: _save,
-              child: Text(_isEditing ? "Salvar alterações" : "Cadastrar"),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: _save,
+                child: Text(_isEditing ? "Salvar alterações" : "Cadastrar"),
+              ),
             ),
           ],
         ),
