@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'services/product_service.dart';
+import 'repositories/product_repository.dart';
 import 'screens/home_screen.dart';
 import 'viewmodels/favorites_notifier.dart';
 import 'viewmodels/product_viewmodel.dart';
 
 void main() {
   final service = ProductService();
-  final viewModel = ProductViewModel(service);
+  final repository = ProductRepository(service);
+  final viewModel = ProductViewModel(repository);
 
   runApp(MyApp(viewModel: viewModel));
 }

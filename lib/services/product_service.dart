@@ -4,19 +4,11 @@ import '../models/product.dart';
 
 class ProductService {
   static const _baseUrl = "https://fakestoreapi.com/products";
-  List<Product>? _cache;
 
-  Future<List<Product>> getProducts() async {
-    try {
-      final response = await http.get(Uri.parse(_baseUrl));
-      final List data = jsonDecode(response.body);
-      final products = data.map((json) => Product.fromJson(json)).toList();
-      _cache = products;
-      return products;
-    } catch (e) {
-      if (_cache != null) return _cache!;
-      throw Exception("Não foi possível carregar os produtos");
-    }
+  Future<List<Product>> fetchProducts() async {
+    final response = await http.get(Uri.parse(_baseUrl));
+    final List data = jsonDecode(response.body);
+    return data.map((json) => Product.fromJson(json)).toList();
   }
 
   Future<Product> addProduct(Product product) async {

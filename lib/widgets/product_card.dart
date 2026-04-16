@@ -44,9 +44,12 @@ class ProductCard extends StatelessWidget {
                   ],
                 ),
               ),
-              Checkbox(
-                value: isFavorite,
-                onChanged: (_) => onFavoriteToggle(),
+              IconButton(
+                icon: Icon(
+                  isFavorite ? Icons.star : Icons.star_border,
+                  color: isFavorite ? Colors.amber : null,
+                ),
+                onPressed: onFavoriteToggle,
               ),
               IconButton(
                 icon: const Icon(Icons.edit, size: 20),
