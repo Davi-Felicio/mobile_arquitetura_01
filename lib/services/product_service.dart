@@ -3,17 +3,18 @@ import 'package:http/http.dart' as http;
 import '../models/product.dart';
 
 class ProductService {
-  static const _baseUrl = "https://fakestoreapi.com/products";
+  static const _baseUrl = "https://dummyjson.com/products";
 
   Future<List<Product>> fetchProducts() async {
     final response = await http.get(Uri.parse(_baseUrl));
-    final List data = jsonDecode(response.body);
-    return data.map((json) => Product.fromJson(json)).toList();
+    final data = jsonDecode(response.body);
+    final List products = data["products"];
+    return products.map((json) => Product.fromJson(json)).toList();
   }
 
   Future<Product> addProduct(Product product) async {
     final response = await http.post(
-      Uri.parse(_baseUrl),
+      Uri.parse("$_baseUrl/add"),
       headers: {"Content-Type": "application/json"},
       body: jsonEncode(product.toJson()),
     );
@@ -22,7 +23,7 @@ class ProductService {
       id: data["id"],
       title: product.title,
       price: product.price,
-      image: product.image,
+      thumbnail: product.thumbnail,
       description: product.description,
     );
   }

@@ -2,14 +2,14 @@ class Product {
   final int id;
   final String title;
   final double price;
-  final String image;
+  final String thumbnail;
   final String description;
 
   const Product({
     required this.id,
     required this.title,
     required this.price,
-    required this.image,
+    required this.thumbnail,
     required this.description,
   });
 
@@ -17,8 +17,8 @@ class Product {
     return Product(
       id: json["id"],
       title: json["title"],
-      price: json["price"].toDouble(),
-      image: json["image"],
+      price: (json["price"] as num).toDouble(),
+      thumbnail: json["thumbnail"] ?? "",
       description: json["description"] ?? "",
     );
   }
@@ -27,7 +27,7 @@ class Product {
     return {
       "title": title,
       "price": price,
-      "image": image,
+      "thumbnail": thumbnail,
       "description": description,
     };
   }

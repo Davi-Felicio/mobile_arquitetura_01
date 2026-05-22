@@ -31,7 +31,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
       _titleController.text = widget.product!.title;
       _priceController.text = widget.product!.price.toString();
       _descriptionController.text = widget.product!.description;
-      _imageController.text = widget.product!.image;
+      _imageController.text = widget.product!.thumbnail;
     }
   }
 
@@ -57,7 +57,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
         id: widget.product!.id,
         title: title,
         price: price,
-        image: image,
+        thumbnail: image,
         description: description,
       );
       widget.viewModel.updateProduct(updated);
@@ -66,7 +66,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
         id: 0,
         title: title,
         price: price,
-        image: image,
+        thumbnail: image,
         description: description,
       );
       widget.viewModel.addProduct(created);
