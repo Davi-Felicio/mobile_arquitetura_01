@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../viewmodels/auth_notifier.dart';
 import '../viewmodels/favorites_notifier.dart';
 import '../viewmodels/product_viewmodel.dart';
 import '../viewmodels/product_state.dart';
@@ -62,7 +63,30 @@ class _ProductListScreenState extends State<ProductListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Produtos")),
+      appBar: AppBar(
+        title: const Text("Produtos"),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            tooltip: "Atualizar",
+            onPressed: () => widget.viewModel.loadProducts(),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 12),
+            child: Consumer<AuthNotifier>(
+              builder: (context, auth, _) => CircleAvatar(
+                radius: 16,
+                backgroundImage: (auth.user?.image.isNotEmpty ?? false)
+                    ? NetworkImage(auth.user!.image)
+                    : null,
+                child: (auth.user?.image.isEmpty ?? true)
+                    ? const Icon(Icons.person, size: 16)
+                    : null,
+              ),
+            ),
+          ),
+        ],
+      ),
       body: ValueListenableBuilder<ProductState>(
         valueListenable: widget.viewModel.state,
         builder: (context, state, _) {
