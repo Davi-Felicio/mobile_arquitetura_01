@@ -3,8 +3,10 @@ import 'package:provider/provider.dart';
 import 'services/product_service.dart';
 import 'repositories/product_repository.dart';
 import 'screens/home_screen.dart';
+import 'screens/login_screen.dart';
 import 'viewmodels/favorites_notifier.dart';
 import 'viewmodels/product_viewmodel.dart';
+import 'viewmodels/auth_notifier.dart';
 
 void main() {
   final service = ProductService();
@@ -21,11 +23,21 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => FavoritesNotifier(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => FavoritesNotifier()),
+        ChangeNotifierProvider(create: (_) => AuthNotifier()),
+      ],
       child: MaterialApp(
         title: 'Products',
-        home: HomeScreen(viewModel: viewModel),
+        home: Consumer<AuthNotifier>(
+          builder: (context, auth, _) {
+            if (auth.isAuthenticated) {
+              return HomeScreen(viewModel: viewModel);
+            }
+            return const LoginScreen();
+          },
+        ),
       ),
     );
   }
