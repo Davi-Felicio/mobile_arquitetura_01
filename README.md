@@ -1,3 +1,6 @@
+CREDENCIAIS DE TESTE DUMMYJSON PARA LOGIN
+emilys / emilyspass
+
 # mobile_arquitetura_02
 
 Evolução da aplicação Flutter 
