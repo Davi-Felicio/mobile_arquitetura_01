@@ -1,5 +1,58 @@
-CREDENCIAIS DE TESTE DUMMYJSON PARA LOGIN
-emilys / emilyspass
+# mobile_arquitetura_01
+
+Aplicação Flutter com arquitetura MVVM + Repository Pattern, autenticação via DummyJSON e CRUD de produtos.
+
+---
+
+## Como rodar o projeto
+
+### Pré-requisitos
+
+- [Flutter SDK](https://docs.flutter.dev/get-started/install) (3.x ou superior)
+- Dart SDK (incluso no Flutter)
+- Android Studio / VS Code com extensão Flutter
+- Emulador Android, iOS Simulator ou dispositivo físico
+
+### Passos
+
+```bash
+# 1. Clone o repositório
+git clone https://github.com/Davi-Felicio/mobile_arquitetura_01.git
+cd mobile_arquitetura_01
+
+# 2. Instale as dependências
+flutter pub get
+
+# 3. Execute o projeto
+flutter run
+```
+
+### Credenciais de teste
+
+Use as credenciais abaixo na tela de login (API DummyJSON):
+
+| Campo | Valor |
+|-------|-------|
+| Usuário | `emilys` |
+| Senha | `emilyspass` |
+
+> Outras credenciais disponíveis em [dummyjson.com/users](https://dummyjson.com/users)
+
+---
+
+## Arquitetura
+
+```
+lib/
+├── models/          # Entidades (Product, AuthUser)
+├── services/        # DataSources HTTP (ProductService, AuthService)
+├── repositories/    # Regras de cache e decisão de fonte (ProductRepository)
+├── viewmodels/      # Estado da aplicação (ProductViewModel, AuthNotifier, FavoritesNotifier)
+├── screens/         # Telas (Login, Home, ProductList, ProductDetail, ProductForm)
+└── widgets/         # Componentes reutilizáveis (ProductCard)
+```
+
+---
 
 # mobile_arquitetura_02
 
